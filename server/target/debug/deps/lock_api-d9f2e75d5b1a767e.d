@@ -1,8 +1,0 @@
-C:\Users\petri\Projetos\trabalho-bd\server\target\debug\deps\liblock_api-d9f2e75d5b1a767e.rmeta: C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\lib.rs C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\mutex.rs C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\remutex.rs C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\rwlock.rs
-
-C:\Users\petri\Projetos\trabalho-bd\server\target\debug\deps\lock_api-d9f2e75d5b1a767e.d: C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\lib.rs C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\mutex.rs C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\remutex.rs C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\rwlock.rs
-
-C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\lib.rs:
-C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\mutex.rs:
-C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\remutex.rs:
-C:\Users\petri\.cargo\registry\src\index.crates.io-6f17d22bba15001f\lock_api-0.4.12\src\rwlock.rs:
