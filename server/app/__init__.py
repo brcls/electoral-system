@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
+from flask_cors import CORS
 
 metadata = MetaData(naming_convention={
     "ix": "ix_%(column_0_label)s",
@@ -13,6 +14,7 @@ metadata = MetaData(naming_convention={
 
 # Depois, você pode associar esse metadata ao seu SQLAlchemy
 app = Flask(__name__)
+CORS(app)
 db = SQLAlchemy(metadata=metadata)
 migrate = Migrate()
 
