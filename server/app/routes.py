@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from .models import db, Partido, Cargo, Pessoa, Candidato, ProcessoJudicial, EquipeApoio, ParticipanteEquipe, Doador, Doacao, Pleito
+from flask_cors import cross_origin
+from sqlalchemy.exc import IntegrityError
 
 bp = Blueprint('api', __name__)
 
@@ -163,12 +165,54 @@ def update_candidato(id):
     db.session.commit()
     return jsonify({'message': 'Candidato atualizado com sucesso!'})
 
+
+
 @bp.route('/candidatos/<int:id>', methods=['DELETE'])
+@cross_origin()
 def delete_candidato(id):
     candidato = Candidato.query.get_or_404(id)
-    db.session.delete(candidato)
-    db.session.commit()
-    return jsonify({'message': 'Candidato deletado com sucesso!'})
+
+    # Encontrar e remover referências na tabela "equipe_apoio"
+    equipe_apoio_referencias = EquipeApoio.query.filter_by(candidato_id=id).all()
+    for equipe_apoio_ref in equipe_apoio_referencias:
+        participantes_referencias = ParticipanteEquipe.query.filter_by(equipe_apoio_id=equipe_apoio_ref.id).all()
+
+        for participante in participantes_referencias:
+            db.session.delete(participante)
+            db.session.commit()
+
+        db.session.delete(equipe_apoio_ref)
+        db.session.commit()
+
+    processos = ProcessoJudicial.query.filter_by(candidato_id=id).all()
+    for processo in processos:
+        db.session.delete(processo)
+        db.session.commit()
+
+    doacoes = Doacao.query.filter_by(candidato_id=id).all()
+    for doacao in doacoes:
+        doador = Doador.query.get_or_404(doacao.doador_id)
+
+        db.session.delete(doacao)
+        db.session.commit()
+
+        db.session.delete(doador)
+        db.session.commit()
+
+    pleitos = Pleito.query.filter_by(candidato_id=id).all()
+    for pleito in pleitos:
+        db.session.delete(pleito)
+        db.session.commit()
+
+    try:
+        # Agora é seguro excluir o candidato
+        db.session.delete(candidato)
+        db.session.commit()
+        return jsonify({'message': 'Candidato deletado com sucesso!'})
+    except IntegrityError as e:
+        db.session.rollback()
+        return jsonify({'error': 'Erro de integridade: {}'.format(str(e))}), 500
+
 
 
 # CRUD for ProcessoJudicial

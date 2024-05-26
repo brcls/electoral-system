@@ -1,4 +1,4 @@
-import { Show, createResource, type Component } from "solid-js";
+import { Show, createResource, createSignal, type Component } from "solid-js";
 import { Header } from "./components/Header";
 import { Modal } from "./components/Modal";
 
@@ -30,17 +30,38 @@ async function fetchCargos(): Promise<Cargo[]> {
 }
 
 const App: Component = () => {
-  const [candidatos] = createResource<Candidatura[]>(fetchCandidatos);
+  const [candidatos, setCandidatos] = createSignal([]);
+  fetchCandidatos().then(setCandidatos);
+
   const [partidos] = createResource<Partido[]>(fetchPartidos);
   const [cargos] = createResource<Cargo[]>(fetchCargos);
 
-  console.log(candidatos);
+  async function deleteCandidato(id: number): Promise<void> {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/candidatos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setCandidatos((prevCandidatos) =>
+        prevCandidatos.filter((candidato) => candidato.id !== id),
+      );
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
 
   return (
     <>
       <Header />
       <Modal />
-      <div class="my-10 flex w-screen flex-col items-center gap-4">
+      <div class="my-10 flex w-full flex-col items-center gap-4">
         <Show when={candidatos()} fallback={<p>Carregando...</p>}>
           {(data) => (
             <>
@@ -98,6 +119,12 @@ const App: Component = () => {
                     <p class="text-lg">{item.cargo.nome}</p>
                     <p class="text-lg">{item.partido.nome}</p>
                     <p class="text-lg">{item.data_candidatura}</p>
+                    <p
+                      class="text-lg text-red-500 hover:cursor-pointer hover:underline"
+                      onClick={async () => await deleteCandidato(item.id)}
+                    >
+                      deletar
+                    </p>
                   </div>
                   <div class="divider"></div>
                   <div class="flex justify-between gap-4">

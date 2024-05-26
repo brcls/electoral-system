@@ -14,6 +14,7 @@ export const Header: Component = () => {
             class="input input-bordered w-24 md:w-auto"
           />
         </div>
+        <button class="btn btn-neutral">Adicionar</button>
       </div>
     </div>
   );

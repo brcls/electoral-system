@@ -1,4 +1,5 @@
 from . import db
+from sqlalchemy.orm import relationship
 
 class Partido(db.Model):
     id = db.Column(db.Integer, primary_key=True)

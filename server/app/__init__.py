@@ -12,22 +12,20 @@ metadata = MetaData(naming_convention={
     "pk": "pk_%(table_name)s"
 })
 
-# Depois, você pode associar esse metadata ao seu SQLAlchemy
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app, support_credentials=True, origins='*')
+app.config['CORS_HEADERS'] = 'Content-Type'
 db = SQLAlchemy(metadata=metadata)
 migrate = Migrate()
 
 def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://brcls:286723@localhost/electoralsystem'
 
-    # Importa db aqui para evitar importação circular
     from .models import db
 
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Importa o Blueprint de rotas aqui para evitar importação circular
     from .routes import bp as routes_bp
     app.register_blueprint(routes_bp)
 
