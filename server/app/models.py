@@ -1,5 +1,3 @@
-# app/models.py
-
 from . import db
 
 class Partido(db.Model):
