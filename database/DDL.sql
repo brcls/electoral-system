@@ -43,7 +43,7 @@ CREATE TABLE candidato (
     partido_id INT NOT NULL REFERENCES partido(id),
     cargo_id INT NOT NULL REFERENCES cargo(id),
     data_candidatura DATE NOT NULL,
-    vice_candidato_id INT REFERENCES pessoa(id)
+    vice_candidato_id INT REFERENCES candidato(id)
 );
 
 -- Criação da tabela processo_judicial
@@ -94,7 +94,6 @@ CREATE TABLE pleito (
     candidato_id INT NOT NULL REFERENCES candidato(id),
     votos_recebidos INT NOT NULL
 );
-
 
 -- Trigger para garantir que um candidato pode concorrer a apenas um cargo por ano
 CREATE OR REPLACE FUNCTION check_unique_candidacy_per_year()
