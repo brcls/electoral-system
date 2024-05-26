@@ -48,14 +48,16 @@ class Candidato(db.Model):
     data_candidatura = db.Column(db.Date, nullable=False)
     vice_candidato_id = db.Column(db.Integer, db.ForeignKey('candidato.id'), nullable=True)
 
-    def serialize(self):
+    def serialize(self, pessoa):
         return {
             'id': self.id,
             'pessoa_id': self.pessoa_id,
             'partido_id': self.partido_id,
             'cargo_id': self.cargo_id,
             'data_candidatura': self.data_candidatura.strftime('%Y-%m-%d') if self.data_candidatura else None,
-            'vice_candidato_id': self.vice_candidato_id
+            'vice_candidato_id': self.vice_candidato_id,
+            'nome': pessoa.nome,
+            'data_nascimento': pessoa.data_nascimento.strftime('%Y-%m-%d') if pessoa.data_nascimento else None,
         }
 
 class ProcessoJudicial(db.Model):

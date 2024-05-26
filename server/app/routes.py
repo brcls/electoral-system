@@ -117,7 +117,11 @@ def delete_pessoa(id):
 @bp.route('/candidatos', methods=['GET'])
 def get_candidatos():
     candidatos = Candidato.query.all()
-    return jsonify([candidato.serialize() for candidato in candidatos])
+    serialize = []
+    for candidato in candidatos:
+        pessoa = Pessoa.query.get_or_404(candidato.pessoa_id)
+        serialize.append(candidato.serialize(pessoa))
+    return jsonify(serialize)
 
 @bp.route('/candidatos', methods=['POST'])
 def create_candidato():
