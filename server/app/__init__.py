@@ -2,15 +2,22 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+# Cria os objetos Flask e SQLAlchemy fora da função create_app()
+app = Flask(__name__)
 db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app():
-    app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://brcls:286723@localhost/electoralsystem'
+
+    # Importa db aqui para evitar importação circular
+    from .models import db
+
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from . import routes, models  # Importando rotas e modelos
+    # Importa o Blueprint de rotas aqui para evitar importação circular
+    from .routes import bp as routes_bp
+    app.register_blueprint(routes_bp)
 
     return app

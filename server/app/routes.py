@@ -1,7 +1,6 @@
-from flask import render_template, request, jsonify, Blueprint
-from .models import db, Candidato
+from flask import Blueprint, render_template, request, jsonify
+from .models import db, Candidato 
 
-# Criando um Blueprint para as rotas
 bp = Blueprint('routes', __name__)
 
 @bp.route('/')
