@@ -13,86 +13,86 @@ CREATE DATABASE electoralsystem
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False;
 
--- Criação da tabela Partido
-CREATE TABLE Partido (
-    ID SERIAL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Programa TEXT NOT NULL
+-- Criação da tabela partido
+CREATE TABLE partido (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    programa TEXT NOT NULL
 );
 
--- Criação da tabela Cargo
-CREATE TABLE Cargo (
-    ID SERIAL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Tipo VARCHAR(50) NOT NULL,
-    Local VARCHAR(100) NOT NULL,
-    QuantidadeEleitos INT NOT NULL
+-- Criação da tabela cargo
+CREATE TABLE cargo (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    local VARCHAR(100) NOT NULL,
+    quantidade_eleitos INT NOT NULL
 );
 
--- Criação da tabela Pessoa
-CREATE TABLE Pessoa (
-    ID SERIAL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    DataNascimento DATE NOT NULL
+-- Criação da tabela pessoa
+CREATE TABLE pessoa (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    data_nascimento DATE NOT NULL
 );
 
--- Criação da tabela Candidato
-CREATE TABLE Candidato (
-    ID SERIAL PRIMARY KEY,
-    PessoaID INT NOT NULL REFERENCES Pessoa(ID),
-    PartidoID INT NOT NULL REFERENCES Partido(ID),
-    CargoID INT NOT NULL REFERENCES Cargo(ID),
-    DataCandidatura DATE NOT NULL,
-    ViceCandidatoID INT REFERENCES Pessoa(ID)
+-- Criação da tabela candidato
+CREATE TABLE candidato (
+    id SERIAL PRIMARY KEY,
+    pessoa_id INT NOT NULL REFERENCES pessoa(id),
+    partido_id INT NOT NULL REFERENCES partido(id),
+    cargo_id INT NOT NULL REFERENCES cargo(id),
+    data_candidatura DATE NOT NULL,
+    vice_candidato_id INT REFERENCES pessoa(id)
 );
 
--- Criação da tabela ProcessoJudicial
-CREATE TABLE ProcessoJudicial (
-    ID SERIAL PRIMARY KEY,
-    CandidatoID INT NOT NULL REFERENCES Candidato(ID),
-    Status VARCHAR(50) NOT NULL,
-    Resultado VARCHAR(50),
-    DataInicio DATE NOT NULL,
-    DataTermino DATE
+-- Criação da tabela processo_judicial
+CREATE TABLE processo_judicial (
+    id SERIAL PRIMARY KEY,
+    candidato_id INT NOT NULL REFERENCES candidato(id),
+    status VARCHAR(50) NOT NULL,
+    resultado VARCHAR(50),
+    data_inicio DATE NOT NULL,
+    data_termino DATE
 );
 
--- Criação da tabela EquipeApoio
-CREATE TABLE EquipeApoio (
-    ID SERIAL PRIMARY KEY,
-    CandidatoID INT NOT NULL REFERENCES Candidato(ID),
-    Ano INT NOT NULL
+-- Criação da tabela equipe_apoio
+CREATE TABLE equipe_apoio (
+    id SERIAL PRIMARY KEY,
+    candidato_id INT NOT NULL REFERENCES candidato(id),
+    ano INT NOT NULL
 );
 
--- Criação da tabela ParticipanteEquipe
-CREATE TABLE ParticipanteEquipe (
-    ID SERIAL PRIMARY KEY,
-    PessoaID INT NOT NULL REFERENCES Pessoa(ID),
-    EquipeApoioID INT NOT NULL REFERENCES EquipeApoio(ID)
+-- Criação da tabela participante_equipe
+CREATE TABLE participante_equipe (
+    id SERIAL PRIMARY KEY,
+    pessoa_id INT NOT NULL REFERENCES pessoa(id),
+    equipe_apoio_id INT NOT NULL REFERENCES equipe_apoio(id)
 );
 
--- Criação da tabela Doador
-CREATE TABLE Doador (
-    ID SERIAL PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Tipo VARCHAR(50) NOT NULL
+-- Criação da tabela doador
+CREATE TABLE doador (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL
 );
 
--- Criação da tabela Doacao
-CREATE TABLE Doacao (
-    ID SERIAL PRIMARY KEY,
-    DoadorID INT NOT NULL REFERENCES Doador(ID),
-    CandidatoID INT NOT NULL REFERENCES Candidato(ID),
-    Valor DECIMAL(10, 2) NOT NULL,
-    Data DATE NOT NULL
+-- Criação da tabela doacao
+CREATE TABLE doacao (
+    id SERIAL PRIMARY KEY,
+    doador_id INT NOT NULL REFERENCES doador(id),
+    candidato_id INT NOT NULL REFERENCES candidato(id),
+    valor DECIMAL(10, 2) NOT NULL,
+    data DATE NOT NULL
 );
 
--- Criação da tabela Pleito
-CREATE TABLE Pleito (
-    ID SERIAL PRIMARY KEY,
-    Ano INT NOT NULL,
-    CargoID INT NOT NULL REFERENCES Cargo(ID),
-    CandidatoID INT NOT NULL REFERENCES Candidato(ID),
-    VotosRecebidos INT NOT NULL
+-- Criação da tabela pleito
+CREATE TABLE pleito (
+    id SERIAL PRIMARY KEY,
+    ano INT NOT NULL,
+    cargo_id INT NOT NULL REFERENCES cargo(id),
+    candidato_id INT NOT NULL REFERENCES candidato(id),
+    votos_recebidos INT NOT NULL
 );
 
 
@@ -101,10 +101,10 @@ CREATE OR REPLACE FUNCTION check_unique_candidacy_per_year()
 RETURNS TRIGGER AS $$
 BEGIN
     IF EXISTS (
-        SELECT 1 FROM Candidato 
-        WHERE PessoaID = NEW.PessoaID 
-        AND EXTRACT(YEAR FROM DataCandidatura) = EXTRACT(YEAR FROM NEW.DataCandidatura)
-        AND ID != NEW.ID
+        SELECT 1 FROM candidato 
+        WHERE pessoa_id = NEW.pessoa_id 
+        AND EXTRACT(YEAR FROM data_candidatura) = EXTRACT(YEAR FROM NEW.data_candidatura)
+        AND id != NEW.id
     ) THEN
         RAISE EXCEPTION 'O candidato já está concorrendo a um cargo neste ano';
     END IF;
@@ -113,7 +113,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_check_unique_candidacy_per_year
-BEFORE INSERT OR UPDATE ON Candidato
+BEFORE INSERT OR UPDATE ON candidato
 FOR EACH ROW
 EXECUTE FUNCTION check_unique_candidacy_per_year();
 
@@ -122,11 +122,11 @@ CREATE OR REPLACE FUNCTION check_unique_support_team_per_year()
 RETURNS TRIGGER AS $$
 BEGIN
     IF EXISTS (
-        SELECT 1 FROM ParticipanteEquipe PE
-        JOIN EquipeApoio EA ON PE.EquipeApoioID = EA.ID
-        WHERE PE.PessoaID = NEW.PessoaID
-        AND EA.Ano = (SELECT Ano FROM EquipeApoio WHERE ID = NEW.EquipeApoioID)
-        AND PE.ID != NEW.ID
+        SELECT 1 FROM participante_equipe PE
+        JOIN equipe_apoio EA ON PE.equipe_apoio_id = EA.id
+        WHERE PE.pessoa_id = NEW.pessoa_id
+        AND EA.ano = (SELECT ano FROM equipe_apoio WHERE id = NEW.equipe_apoio_id)
+        AND PE.id != NEW.id
     ) THEN
         RAISE EXCEPTION 'O participante já está em uma equipe de apoio neste ano';
     END IF;
@@ -135,6 +135,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_check_unique_support_team_per_year
-BEFORE INSERT OR UPDATE ON ParticipanteEquipe
+BEFORE INSERT OR UPDATE ON participante_equipe
 FOR EACH ROW
 EXECUTE FUNCTION check_unique_support_team_per_year();
