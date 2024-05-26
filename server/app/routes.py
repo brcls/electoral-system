@@ -120,7 +120,22 @@ def get_candidatos():
     serialize = []
     for candidato in candidatos:
         pessoa = Pessoa.query.get_or_404(candidato.pessoa_id)
-        serialize.append(candidato.serialize(pessoa))
+        vice_candidato = None if candidato.vice_candidato_id == None else Candidato.query.get(candidato.vice_candidato_id)  
+        partido = Partido.query.get_or_404(candidato.partido_id)
+        cargo = Cargo.query.get_or_404(candidato.cargo_id)
+        equipe_de_apoio = Cargo.query.get_or_404(candidato.cargo_id)
+
+        participantes_equipe = ParticipanteEquipe.query.filter_by(equipe_apoio_id=equipe_de_apoio.id).all()
+        serialized_participantes_equipe = [Pessoa.query.get_or_404(participante.pessoa_id).serialize() for participante in participantes_equipe]
+
+        processos = ProcessoJudicial.query.filter_by(candidato_id=candidato.id).all()
+        serialized_processos = [processo.serialize() for processo in processos]
+
+        doacoes = Doacao.query.filter_by(candidato_id=candidato.id).all()
+        serialized_doacoes = [doacao.serialize() for doacao in doacoes]
+
+        serialize.append(candidato.serialize_candidate(pessoa, vice_candidato, partido, cargo, equipe_de_apoio, serialized_participantes_equipe, serialized_processos, serialized_doacoes))
+
     return jsonify(serialize)
 
 @bp.route('/candidatos', methods=['POST'])
