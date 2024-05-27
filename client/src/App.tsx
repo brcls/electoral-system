@@ -56,7 +56,9 @@ const App: Component = () => {
   onMount(() => {
     fetchCandidatos().then((data) => {
       setCandidatos(data);
-      const dataMap = new Set(data.map((item) => item.data_candidatura));
+      const dataMap = new Set(
+        data.map((item) => new Date(item.data_candidatura).getFullYear()),
+      );
       setDatas(Array.from(dataMap));
       const nomeMap = new Set(data.map((item) => item.pessoa.nome));
       setNomes(Array.from(nomeMap));
