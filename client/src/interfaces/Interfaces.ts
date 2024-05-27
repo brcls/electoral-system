@@ -36,9 +36,9 @@ interface ProcessoJudicial {
 }
 
 interface ViceCandidato {
-  data_candidatura: string;
+  data_nascimento: string;
   id: number;
-  partido_id: number;
+  nome: string;
 }
 
 interface Cargo {

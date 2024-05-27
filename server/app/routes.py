@@ -122,7 +122,8 @@ def get_candidatos():
     serialize = []
     for candidato in candidatos:
         pessoa = Pessoa.query.get_or_404(candidato.pessoa_id)
-        vice_candidato = None if candidato.vice_candidato_id == None else Candidato.query.get(candidato.vice_candidato_id)  
+        vice_candidato = None if candidato.vice_candidato_id == None else Candidato.query.get(candidato.vice_candidato_id)
+        pessoa_vice = None if vice_candidato == None else Pessoa.query.get_or_404(vice_candidato.pessoa_id)
         partido = Partido.query.get_or_404(candidato.partido_id)
         cargo = Cargo.query.get_or_404(candidato.cargo_id)
         equipe_de_apoio = Cargo.query.get_or_404(candidato.cargo_id)
@@ -136,7 +137,7 @@ def get_candidatos():
         doacoes = Doacao.query.filter_by(candidato_id=candidato.id).all()
         serialized_doacoes = [doacao.serialize() for doacao in doacoes]
 
-        serialize.append(candidato.serialize_candidate(pessoa, vice_candidato, partido, cargo, equipe_de_apoio, serialized_participantes_equipe, serialized_processos, serialized_doacoes))
+        serialize.append(candidato.serialize_candidate(pessoa, partido, cargo, equipe_de_apoio, serialized_participantes_equipe, serialized_processos, serialized_doacoes, pessoa_vice))
 
     return jsonify(serialize)
 

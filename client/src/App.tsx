@@ -40,6 +40,7 @@ interface FiltroCandidato {
   cargo?: string; // Cargo do candidato
   partido?: string; // Partido do candidato
   data?: string; // Ano de candidatura
+  temVice?: string;
 }
 
 const App: Component = () => {
@@ -48,13 +49,17 @@ const App: Component = () => {
   const [partidos, setPartidos] = createSignal([]);
   const [cargos, setCargos] = createSignal([]);
   const [datas, setDatas] = createSignal([]);
+  const [nomes, setNomes] = createSignal([]);
   const [filtro, setFiltro] = createSignal(null);
+  const [searchTerm, setSearchTerm] = createSignal("");
 
   onMount(() => {
     fetchCandidatos().then((data) => {
       setCandidatos(data);
       const dataMap = new Set(data.map((item) => item.data_candidatura));
       setDatas(Array.from(dataMap));
+      const nomeMap = new Set(data.map((item) => item.pessoa.nome));
+      setNomes(Array.from(nomeMap));
     });
     fetchPartidos().then(setPartidos);
     fetchCargos().then(setCargos);
@@ -64,6 +69,17 @@ const App: Component = () => {
     () => setcandidatosFiltrados(filtrarCandidatos(candidatos(), filtro())),
     [filtro],
   );
+
+  createEffect(
+    () => setcandidatosFiltrados(filtrarPorBusca(candidatos(), searchTerm())),
+    [searchTerm],
+  );
+
+  const filtrarPorBusca = (candidatos: Candidatura[], filtro: string) => {
+    return candidatos.filter((item) =>
+      item.pessoa.nome.toLowerCase().includes(filtro.toLowerCase()),
+    );
+  };
 
   async function deleteCandidato(id: number): Promise<void> {
     try {
@@ -114,9 +130,19 @@ const App: Component = () => {
         new Date(candidato.data_candidatura).getFullYear() ===
           parseInt(filtro.data);
 
+      const viceFiltrado =
+        !filtro ||
+        !filtro.temVice ||
+        (filtro.temVice === "sim" && candidato.vice_candidato) ||
+        (filtro.temVice === "nao" && !candidato.vice_candidato);
+
       // Retornar true se todos os critérios forem atendidos
       return (
-        processoFiltrado && cargoFiltrado && partidoFiltrado && anoFiltrado
+        processoFiltrado &&
+        cargoFiltrado &&
+        partidoFiltrado &&
+        anoFiltrado &&
+        viceFiltrado
       );
     });
   }
@@ -131,9 +157,16 @@ const App: Component = () => {
 
             return (
               <>
-                <div class="flex w-11/12 items-center justify-between gap-4">
+                <div class="flex w-11/12 flex-wrap items-center justify-between gap-4">
+                  <input
+                    type="text"
+                    placeholder="Procure pelo nome"
+                    class="input input-bordered w-full"
+                    value={searchTerm()}
+                    onInput={(e) => setSearchTerm(e.target.value)}
+                  />
                   <select
-                    class="select select-bordered w-full"
+                    class="select select-bordered w-[49%]"
                     onChange={(e) =>
                       setFiltro({ ...filtro(), ficha: e.target.value })
                     }
@@ -143,7 +176,7 @@ const App: Component = () => {
                     <option value="Não procedente">Não procedente</option>
                   </select>
                   <select
-                    class="select select-bordered w-full"
+                    class="select select-bordered w-[49%]"
                     onChange={(e) =>
                       setFiltro({ ...filtro(), cargo: e.target.value })
                     }
@@ -154,7 +187,7 @@ const App: Component = () => {
                     ))}
                   </select>
                   <select
-                    class="select select-bordered w-full"
+                    class="select select-bordered w-[49%]"
                     onChange={(e) =>
                       setFiltro({ ...filtro(), partido: e.target.value })
                     }
@@ -165,7 +198,7 @@ const App: Component = () => {
                     ))}
                   </select>
                   <select
-                    class="select select-bordered w-full"
+                    class="select select-bordered w-[49%]"
                     onChange={(e) =>
                       setFiltro({ ...filtro(), data: e.target.value })
                     }
@@ -174,6 +207,17 @@ const App: Component = () => {
                     {datas().map((item) => (
                       <option value={item}>{item}</option>
                     ))}
+                  </select>
+
+                  <select
+                    class="select select-bordered w-[49%]"
+                    onChange={(e) =>
+                      setFiltro({ ...filtro(), temVice: e.target.value })
+                    }
+                  >
+                    <option value="">Tem Vice</option>
+                    <option value="sim">Sim</option>
+                    <option value="nao">Não</option>
                   </select>
                 </div>
                 {candidatosFiltrados()?.length &&
@@ -228,6 +272,15 @@ const App: Component = () => {
                                 R$ {doacao.valor}
                               </div>
                             ))}
+                          </div>
+                        )}
+                        {item.vice_candidato !== null && (
+                          <div class="w-full gap-4 rounded-xl bg-base-300 px-4 py-6">
+                            <p class="text-lg">Vice Candidato</p>
+                            <div class="divider"></div>
+                            <div class="hover:cursor-pointer hover:underline">
+                              {item.vice_candidato.nome}
+                            </div>
                           </div>
                         )}
                       </div>
