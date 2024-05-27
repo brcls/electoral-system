@@ -175,7 +175,7 @@ const App: Component = () => {
                   >
                     <option value="">Ficha</option>
                     <option value="Procedente">Procedente</option>
-                    <option value="Não procedente">Não procedente</option>
+                    <option value="Não Procedente">Não Procedente</option>
                   </select>
                   <select
                     class="select select-bordered w-[49%]"
