@@ -6,16 +6,9 @@ export const Header: Component = () => {
       <div class="flex-1">
         <a class="btn btn-ghost text-xl">electoral-system</a>
       </div>
-      <div class="flex-none gap-2">
-        <div class="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            class="input input-bordered w-24 md:w-auto"
-          />
-        </div>
-        <button class="btn btn-neutral">Adicionar</button>
-      </div>
+      {/* <div class="flex-none gap-2">
+        <button class="btn btn-neutral">Adicionar Candidato</button>
+      </div> */}
     </div>
   );
 };

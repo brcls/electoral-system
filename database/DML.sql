@@ -38,10 +38,10 @@ INSERT INTO pessoa (nome, data_nascimento) VALUES
 ('Paula Mendes', '1992-10-18');
 
 INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, vice_candidato_id) VALUES 
-(1, 1, 1, '2024-05-01', 2), -- João Silva para Presidente com Ana Costa como vice
-(3, 2, 2, '2024-05-01', NULL), -- Pedro Almeida para Governador de SP
-(4, 3, 3, '2024-05-01', NULL), -- Mariana Rocha para Prefeita de SP
-(5, 4, 4, '2024-05-01', NULL), -- Carlos Souza para Deputado Federal
+(1, 1, 1, '2024-05-01', 1), -- João Silva para Presidente com Ana Costa como vice
+(3, 2, 2, '2024-05-01', 2), -- Pedro Almeida para Governador de SP
+(4, 3, 3, '2024-05-01', 3), -- Mariana Rocha para Prefeita de SP
+(5, 4, 4, '2024-05-01', 4), -- Carlos Souza para Deputado Federal
 (6, 1, 5, '2024-05-01', NULL), -- Fernanda Ramos para Deputada Estadual de SP
 (7, 3, 6, '2024-05-01', NULL); -- Lucas Pereira para Vereador de SP
 
