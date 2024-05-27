@@ -160,7 +160,7 @@ const App: Component = () => {
                 <div class="flex w-11/12 flex-wrap items-center justify-between gap-4">
                   <input
                     type="text"
-                    placeholder="Procure pelo nome"
+                    placeholder="Procure pelo nome do candidato"
                     class="input input-bordered w-full"
                     value={searchTerm()}
                     onInput={(e) => setSearchTerm(e.target.value)}
