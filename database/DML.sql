@@ -86,21 +86,21 @@ INSERT INTO pessoa (nome, data_nascimento) VALUES
 
 -- Adicionando mais candidatos
 INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, vice_candidato_id) VALUES 
-(1, 1, 2, '2024-05-01', NULL), -- Rafael Nunes para Deputado Distrital
-(2, 3, 3, '2024-05-01', NULL), -- Beatriz Oliveira para Vereadora do RJ
-(3, 5, 5, '2024-05-01', NULL), -- Sofia Carvalho para Senadora
-(4, 6, 6, '2024-05-01', NULL), -- Gustavo Ferreira para Vereador do RJ
-(5, 8, 8, '2024-05-01', NULL), -- Eduardo Franco para Vereador em BH
-(6, 9, 9, '2024-05-01', NULL), -- Isabela Almeida para Prefeita de BH
-(7, 2, 3, '2024-05-01', NULL), -- Tiago Silva para Vereador do RJ
-(8, 3, 2, '2024-05-01', NULL), -- Camila Ramos para Deputada Distrital
-(9, 4, 1, '2024-05-01', NULL), -- Rodrigo Costa para Presidente
-(10, 5, 8, '2024-05-01', NULL), -- Larissa Rodrigues para Vereadora em BH
-(11, 6, 7, '2024-05-01', NULL), -- Gabriel Santos para Senador por SP
-(12, 7, 6, '2024-05-01', NULL), -- Bruna Fernandes para Deputada Estadual no RJ
-(13, 8, 5, '2024-05-01', NULL), -- Felipe Barros para Senador por MG
-(14, 9, 4, '2024-05-01', NULL), -- Renata Machado para Prefeita do RJ
-(15, 10, 3, '2024-05-01', NULL)
+(1, 1, 2, '2023-05-01', NULL), -- Rafael Nunes para Deputado Distrital
+(2, 3, 3, '2022-07-15', NULL), -- Beatriz Oliveira para Vereadora do RJ
+(3, 5, 5, '2024-09-20', NULL), -- Sofia Carvalho para Senadora
+(4, 6, 6, '2025-03-10', NULL), -- Gustavo Ferreira para Vereador do RJ
+(5, 8, 8, '2023-11-30', NULL), -- Eduardo Franco para Vereador em BH
+(6, 9, 9, '2022-04-05', NULL), -- Isabela Almeida para Prefeita de BH
+(7, 2, 3, '2024-10-18', NULL), -- Tiago Silva para Vereador do RJ
+(8, 3, 2, '2022-12-25', NULL), -- Camila Ramos para Deputada Distrital
+(9, 4, 1, '2025-06-08', NULL), -- Rodrigo Costa para Presidente
+(10, 5, 8, '2023-08-14', NULL), -- Larissa Rodrigues para Vereadora em BH
+(11, 6, 7, '2024-02-22', NULL), -- Gabriel Santos para Senador por SP
+(12, 7, 6, '2023-10-30', NULL), -- Bruna Fernandes para Deputada Estadual no RJ
+(13, 8, 5, '2022-05-17', NULL), -- Felipe Barros para Senador por MG
+(14, 9, 4, '2025-04-01', NULL), -- Renata Machado para Prefeita do RJ
+(15, 10, 3, '2024-09-12', NULL);
 
 INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, vice_candidato_id) VALUES 
 (16, 2, 1, '2024-05-01', 2), -- Juliana Martins para Senadora com Rafael Nunes como vice
