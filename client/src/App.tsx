@@ -172,6 +172,7 @@ const App: Component = () => {
                     onChange={(e) =>
                       setFiltro({ ...filtro(), ficha: e.target.value })
                     }
+                    value={filtro()?.ficha ?? ""}
                   >
                     <option value="">Ficha</option>
                     <option value="Procedente">Procedente</option>
@@ -182,6 +183,7 @@ const App: Component = () => {
                     onChange={(e) =>
                       setFiltro({ ...filtro(), cargo: e.target.value })
                     }
+                    value={filtro()?.cargo ?? ""}
                   >
                     <option value="">Cargo</option>
                     {cargos().map((item) => (
@@ -193,6 +195,7 @@ const App: Component = () => {
                     onChange={(e) =>
                       setFiltro({ ...filtro(), partido: e.target.value })
                     }
+                    value={filtro()?.partido ?? ""}
                   >
                     <option value="">Partido</option>
                     {partidos().map((item) => (
@@ -204,6 +207,7 @@ const App: Component = () => {
                     onChange={(e) =>
                       setFiltro({ ...filtro(), data: e.target.value })
                     }
+                    value={filtro()?.data ?? ""}
                   >
                     <option value="">Ano de candidatura</option>
                     {datas().map((item) => (
@@ -216,11 +220,18 @@ const App: Component = () => {
                     onChange={(e) =>
                       setFiltro({ ...filtro(), temVice: e.target.value })
                     }
+                    value={filtro()?.temVice ?? ""}
                   >
                     <option value="">Tem Vice</option>
                     <option value="sim">Sim</option>
                     <option value="nao">Não</option>
                   </select>
+                  <button
+                    class="btn btn-neutral w-[49%]"
+                    onClick={() => setFiltro(null)}
+                  >
+                    Limpar filtro
+                  </button>
                 </div>
                 {candidatosFiltrados()?.length &&
                   candidatosFiltrados().map((item) => (
