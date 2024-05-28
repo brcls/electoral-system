@@ -1,32 +1,35 @@
+import sys
+import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from sqlalchemy import MetaData
-from flask_cors import CORS
 
-metadata = MetaData(naming_convention={
-    "ix": "ix_%(column_0_label)s",
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "pk": "pk_%(table_name)s"
-})
+# Adiciona o caminho da pasta raiz ao sys.path
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-app = Flask(__name__)
-cors = CORS(app, support_credentials=True, origins='*')
-app.config['CORS_HEADERS'] = 'Content-Type'
-db = SQLAlchemy(metadata=metadata)
-migrate = Migrate()
+from .db import get_db_connection
+from .routes.partido import partido_bp
+from .routes.cargo import cargo_bp
+from .routes.pessoa import pessoa_bp
+from .routes.candidato import candidato_bp
+from .routes.processo_judicial import processo_judicial_bp
+from .routes.equipe_apoio import equipe_apoio_bp
+from .routes.participante_equipe import participante_equipe_bp
+from .routes.doador import doador_bp
+from .routes.doacao import doacao_bp
+from .routes.pleito import pleito_bp
 
 def create_app():
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://brcls:286723@localhost/electoralsystem'
+    app = Flask(__name__)
 
-    from .models import db
-
-    db.init_app(app)
-    migrate.init_app(app, db)
-
-    from .routes import bp as routes_bp
-    app.register_blueprint(routes_bp)
+    # Registro dos Blueprints para todas as tabelas
+    app.register_blueprint(partido_bp)
+    app.register_blueprint(cargo_bp)
+    app.register_blueprint(pessoa_bp)
+    app.register_blueprint(candidato_bp)
+    app.register_blueprint(processo_judicial_bp)
+    app.register_blueprint(equipe_apoio_bp)
+    app.register_blueprint(participante_equipe_bp)
+    app.register_blueprint(doador_bp)
+    app.register_blueprint(doacao_bp)
+    app.register_blueprint(pleito_bp)
 
     return app
