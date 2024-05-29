@@ -15,7 +15,7 @@ def add_doacao():
     data_doacao = data['data']
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('INSERT INTO doacao (doador_id, candidato_id, valor, data) VALUES (%s, %s, %s, %s)', 
+    cur.execute('INSERT INTO doacao (doador_id, candidato_id, valor, data) VALUES (%s, %s, %s, %s)',
                 (doador_id, candidato_id, valor, data_doacao))
     conn.commit()
     cur.close()
@@ -26,7 +26,16 @@ def add_doacao():
 def get_doacoes():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute('SELECT * FROM doacao')
+    cur.execute('''
+        SELECT *,  
+        (
+            SELECT row_to_json(p)
+            FROM candidato c
+            JOIN pessoa p ON c.pessoa_id = p.id
+            WHERE doacao.candidato_id = c.id
+        ) AS candidato 
+        FROM doacao'''
+                )
     doacoes = cur.fetchall()
     cur.close()
     return jsonify(doacoes), 200
@@ -36,7 +45,7 @@ def get_doacoes():
 def get_doacao(id):
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute('SELECT * FROM doacao WHERE id = %s', (id,))
+    cur.execute('SELECT *, FROM doacao WHERE id = %s', (id,))
     doacao = cur.fetchone()
     cur.close()
     return jsonify(doacao), 200 if doacao else 404
@@ -51,7 +60,7 @@ def update_doacao(id):
     data_doacao = data['data']
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('UPDATE doacao SET doador_id = %s, candidato_id = %s, valor = %s, data = %s WHERE id = %s', 
+    cur.execute('UPDATE doacao SET doador_id = %s, candidato_id = %s, valor = %s, data = %s WHERE id = %s',
                 (doador_id, candidato_id, valor, data_doacao, id))
     conn.commit()
     cur.close()

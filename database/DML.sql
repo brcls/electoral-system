@@ -77,29 +77,29 @@ INSERT INTO pessoa (nome, data_nascimento) VALUES
 ('Larissa Rodrigues', '1994-04-25'),
 ('Gabriel Santos', '1985-08-17');
 
-INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, vice_candidato_id) VALUES 
-(1, 1, 2, '2023-05-01', NULL), 
-(2, 3, 3, '2022-07-15', NULL),
-(3, 5, 5, '2024-09-20', NULL),
-(4, 6, 6, '2025-03-10', NULL),
-(5, 8, 8, '2023-11-30', NULL), 
-(6, 9, 9, '2022-04-05', NULL), 
-(7, 2, 3, '2024-10-18', NULL), 
-(8, 3, 2, '2022-12-25', NULL),
-(9, 4, 1, '2025-06-08', NULL), 
-(10, 5, 8, '2023-08-14', NULL),
-(11, 6, 7, '2024-02-22', NULL), 
-(12, 7, 6, '2023-10-30', NULL), 
-(13, 8, 5, '2022-05-17', NULL), 
-(14, 9, 4, '2025-04-01', NULL), 
-(15, 10, 3, '2024-09-12', NULL);
+INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, eleito, vice_candidato_id) VALUES 
+(1, 1, 2, '2023-05-01', TRUE, NULL), 
+(2, 3, 3, '2022-07-15', TRUE, NULL),
+(3, 5, 5, '2024-09-20', TRUE, NULL),
+(4, 6, 6, '2025-03-10', FALSE, NULL),
+(5, 8, 8, '2023-11-30', TRUE, NULL), 
+(6, 9, 9, '2022-04-05', FALSE, NULL), 
+(7, 2, 3, '2024-10-18', FALSE, NULL), 
+(8, 3, 2, '2022-12-25', FALSE, NULL),
+(9, 4, 1, '2025-06-08', FALSE, NULL), 
+(10, 5, 8, '2023-08-14', FALSE, NULL),
+(11, 6, 7, '2024-02-22', TRUE, NULL), 
+(12, 7, 6, '2023-10-30', TRUE, NULL), 
+(13, 8, 5, '2022-05-17', FALSE, NULL), 
+(14, 9, 4, '2025-04-01', TRUE, NULL), 
+(15, 10, 3, '2024-09-12', TRUE, NULL);
 
-INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, vice_candidato_id) VALUES 
-(16, 2, 1, '2024-05-01', 2), 
-(17, 4, 4, '2024-05-01', 3), 
-(18, 7, 7, '2024-05-01', 5), 
-(19, 10, 10, '2024-05-01', 6),
-(20, 1, 4,'2024-05-01', 4);
+INSERT INTO candidato (pessoa_id, partido_id, cargo_id, data_candidatura, eleito, vice_candidato_id) VALUES 
+(16, 2, 1, '2024-05-01', TRUE, 2), 
+(17, 4, 4, '2024-05-01', FALSE, 3), 
+(18, 7, 7, '2024-05-01', TRUE, 5), 
+(19, 10, 10, '2024-05-01', TRUE, 6),
+(20, 1, 4,'2024-05-01', FALSE, 4);
 
 INSERT INTO processo_judicial (candidato_id, status, resultado, data_inicio, data_termino) VALUES 
 (6, 'Julgado', 'Não Procedente', '2020-02-01', '2021-01-10'),

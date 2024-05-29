@@ -4,14 +4,14 @@ interface Doacao {
   doador_id: number;
   id: number;
   valor: string;
+  candidato?: Pessoa;
 }
 
 interface EquipeDeApoio {
+  ano: number;
+  candidato_id: number;
   id: number;
-  local: string;
-  nome: string;
-  quantidade_eleitos: number;
-  tipo: string;
+  candidato?: Pessoa;
 }
 
 interface Partido {
@@ -33,6 +33,7 @@ interface ProcessoJudicial {
   id: number;
   resultado: string;
   status: string;
+  candidato?: Pessoa;
 }
 
 interface ViceCandidato {
@@ -54,6 +55,7 @@ interface Candidatura {
   doacoes: Doacao[];
   cargo: Cargo;
   equipe_de_apoio: EquipeDeApoio;
+  eleito: boolean;
   id: number;
   partido: Partido;
   pessoa: Pessoa;

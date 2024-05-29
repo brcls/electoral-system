@@ -23,7 +23,16 @@ def add_equipe_apoio():
 def get_equipes_apoio():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute('SELECT * FROM equipe_apoio')
+    cur.execute('''
+        SELECT *, 
+        (
+            SELECT row_to_json(p)
+            FROM candidato c
+            JOIN pessoa p ON c.pessoa_id = p.id
+            WHERE equipe_apoio.candidato_id = c.id
+        ) AS candidato 
+        FROM equipe_apoio
+    ''')
     equipes_apoio = cur.fetchall()
     cur.close()
     return jsonify(equipes_apoio), 200

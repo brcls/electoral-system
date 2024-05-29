@@ -16,9 +16,13 @@ from .routes.participante_equipe import participante_equipe_bp
 from .routes.doador import doador_bp
 from .routes.doacao import doacao_bp
 from .routes.pleito import pleito_bp
+from flask_cors import CORS, cross_origin
 
 def create_app():
     app = Flask(__name__)
+
+    cors = CORS(app, support_credentials=True, origins='*')
+    app.config['CORS_HEADERS'] = 'Content-Type'
 
     # Registro dos Blueprints para todas as tabelas
     app.register_blueprint(partido_bp)

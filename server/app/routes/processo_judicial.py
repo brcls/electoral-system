@@ -29,7 +29,16 @@ def add_processo_judicial():
 def get_processos_judiciais():
     conn = get_db_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute('SELECT * FROM processo_judicial')
+    cur.execute('''
+        SELECT *,
+            (
+                SELECT row_to_json(p)
+                FROM candidato c
+                JOIN pessoa p ON c.pessoa_id = p.id
+                WHERE processo_judicial.candidato_id = c.id
+            ) AS candidato
+        FROM processo_judicial
+        ''')
     processos_judiciais = cur.fetchall()
     cur.close()
     return jsonify(processos_judiciais), 200
