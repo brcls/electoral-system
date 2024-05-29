@@ -131,6 +131,11 @@ def delete_candidato(id):
     conn = get_db_connection()
     cur = conn.cursor()
 
+    cur.execute('SELECT vice_candidato_id FROM candidato WHERE id = %s', (id,))
+    vice_candidato_id = cur.fetchone()[0]
+
+    cur.execute('UPDATE candidato SET vice_candidato_id = NULL WHERE vice_candidato_id = %s', (id,))
+
     cur.execute(
         'DELETE FROM participante_equipe WHERE equipe_apoio_id IN (SELECT id FROM equipe_apoio WHERE candidato_id = %s)',
         (id,))
@@ -139,7 +144,11 @@ def delete_candidato(id):
     cur.execute('DELETE FROM doacao WHERE candidato_id = %s', (id,))
     cur.execute('DELETE FROM processo_judicial WHERE candidato_id = %s', (id,))
 
-    # Agora deletar o candidato
+    cur.execute('DELETE FROM candidato WHERE id = %s', (id,))
+
+    if vice_candidato_id:
+        delete_candidato(vice_candidato_id)
+
     cur.execute('DELETE FROM candidato WHERE id = %s', (id,))
     conn.commit()
     cur.close()

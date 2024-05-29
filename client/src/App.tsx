@@ -95,7 +95,21 @@ const App: Component = () => {
   const [filtro, setFiltro] = createSignal<FiltroCandidato | null>(null);
   const [searchTerm, setSearchTerm] = createSignal("");
 
+  function atualizaListas() {
+    fetchCandidatosAndSetDates();
+    fetchPartidos().then(setPartidos);
+    fetchCargos().then(setCargos);
+    fetchProcessosJudiciaias().then(setProcessosJudiciais);
+    fetchEquipesDeApoio().then(setEquipesApoio);
+    fetchPessoas().then(setPessoas);
+    fetchDoacoes().then(setDoacoes);
+  }
+
   onMount(() => {
+    atualizaListas();
+  });
+
+  function fetchCandidatosAndSetDates() {
     fetchCandidatos().then((data) => {
       setCandidatos(data);
       const dataMap = new Set(
@@ -103,13 +117,7 @@ const App: Component = () => {
       );
       setDatas(Array.from(dataMap));
     });
-    fetchPartidos().then(setPartidos);
-    fetchCargos().then(setCargos);
-    fetchProcessosJudiciaias().then(setProcessosJudiciais);
-    fetchEquipesDeApoio().then(setEquipesApoio);
-    fetchPessoas().then(setPessoas);
-    fetchDoacoes().then(setDoacoes);
-  });
+  }
 
   createEffect(
     () => setcandidatosFiltrados(filtrarCandidatos(candidatos(), filtro())),
@@ -143,6 +151,135 @@ const App: Component = () => {
       setCandidatos((prevCandidatos) =>
         prevCandidatos.filter((candidato) => candidato.id !== id),
       );
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
+  async function deleteCargo(id: number): Promise<void> {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/cargo/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setCargos((prevCargos) => prevCargos.filter((cargo) => cargo.id !== id));
+      fetchCandidatosAndSetDates();
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
+  async function deletePartido(id: number): Promise<void> {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/partido/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setPartidos((prevPartidos) =>
+        prevPartidos.filter((partido) => partido.id !== id),
+      );
+      fetchCandidatosAndSetDates();
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
+  async function deleteDoacao(id: number): Promise<void> {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/doacao/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setDoacoes((prevDoacaos) =>
+        prevDoacaos.filter((doacao) => doacao.id !== id),
+      );
+      fetchCandidatosAndSetDates();
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
+  async function deletePessoa(id: number): Promise<void> {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/pessoa/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setPessoas((prevPessoas) =>
+        prevPessoas.filter((pessoa) => pessoa.id !== id),
+      );
+      fetchCandidatosAndSetDates();
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
+  async function deleteProcessoJudicial(id: number): Promise<void> {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/processo_judicial/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setProcessosJudiciais((prevProcessoJudicials) =>
+        prevProcessoJudicials.filter(
+          (processoJudicial) => processoJudicial.id !== id,
+        ),
+      );
+      fetchCandidatosAndSetDates();
+    } catch (error) {
+      console.error("Erro:", error.message);
+    }
+  }
+  async function deleteEquipeApoio(id: number): Promise<void> {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/equipe_apoio/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir dados");
+      }
+
+      setEquipesApoio((prevEquipeApoios) =>
+        prevEquipeApoios.filter((equipeApoio) => equipeApoio.id !== id),
+      );
+      fetchCandidatosAndSetDates();
     } catch (error) {
       console.error("Erro:", error.message);
     }
@@ -203,47 +340,47 @@ const App: Component = () => {
 
   return (
     <>
-      <Header />
+      <Header atualizaListas={atualizaListas} />
       <div class="my-10 flex w-full flex-col items-center gap-4">
         <div class="flex w-11/12 items-center justify-between gap-4">
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 0 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(0)}
           >
             Candidatos
           </button>
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 1 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(1)}
           >
             Cargos
           </button>
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 2 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(2)}
           >
             Partidos
           </button>
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 3 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(3)}
           >
             Doações
           </button>
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 4 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(4)}
           >
             Processos Judiciais
           </button>
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 5 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(5)}
           >
             Equipes de apoio
           </button>
           <button
-            class="w-full text-nowrap rounded-lg  bg-base-200 p-4"
+            class={`w-full text-nowrap rounded-lg  ${tab() == 6 ? "bg-base-300" : "btn-outline"} p-4`}
             onClick={() => setTab(6)}
           >
             Pessoas
@@ -354,12 +491,12 @@ const App: Component = () => {
                           <p class="text-lg">
                             {new Date(item.data_candidatura).getFullYear()}
                           </p>
-                          <p
-                            class="text-lg text-red-500 hover:cursor-pointer hover:underline"
+                          <button
+                            class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
                             onClick={async () => await deleteCandidato(item.id)}
                           >
                             deletar
-                          </p>
+                          </button>
                         </div>
                         <div class="divider"></div>
                         <div class="flex justify-between gap-4">
@@ -428,14 +565,12 @@ const App: Component = () => {
                             <p class="text-xl hover:cursor-pointer hover:underline">
                               {item.nome}
                             </p>
-                            <p
-                              class="text-lg text-red-500 hover:cursor-pointer hover:underline"
-                              onClick={async () =>
-                                await deleteCandidato(item.id)
-                              }
+                            <button
+                              class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
+                              onClick={async () => await deleteCargo(item.id)}
                             >
                               deletar
-                            </p>
+                            </button>
                           </div>
                           {data()?.length - 1 > index && (
                             <div class="divider"></div>
@@ -461,14 +596,12 @@ const App: Component = () => {
                             <p class="text-xl hover:cursor-pointer hover:underline">
                               {item.nome}
                             </p>
-                            <p
-                              class="text-lg text-red-500 hover:cursor-pointer hover:underline"
-                              onClick={async () =>
-                                await deleteCandidato(item.id)
-                              }
+                            <button
+                              class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
+                              onClick={async () => await deletePartido(item.id)}
                             >
                               deletar
-                            </p>
+                            </button>
                           </div>
                           {data()?.length - 1 > index && (
                             <div class="divider"></div>
@@ -503,14 +636,12 @@ const App: Component = () => {
                             <p class="text-xl hover:cursor-pointer hover:underline">
                               {item.valor}
                             </p>
-                            <p
-                              class="text-lg text-red-500 hover:cursor-pointer hover:underline"
-                              onClick={async () =>
-                                await deleteCandidato(item.id)
-                              }
+                            <button
+                              class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
+                              onClick={async () => await deleteDoacao(item.id)}
                             >
                               deletar
-                            </p>
+                            </button>
                           </div>
                           {data()?.length - 1 > index && (
                             <div class="divider"></div>
@@ -550,14 +681,14 @@ const App: Component = () => {
                             <p class="text-xl hover:cursor-pointer hover:underline">
                               {item.status}
                             </p>
-                            <p
-                              class="text-lg text-red-500 hover:cursor-pointer hover:underline"
+                            <button
+                              class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
                               onClick={async () =>
-                                await deleteCandidato(item.id)
+                                await deleteProcessoJudicial(item.id)
                               }
                             >
                               deletar
-                            </p>
+                            </button>
                           </div>
                           {data()?.length - 1 > index && (
                             <div class="divider"></div>
@@ -590,14 +721,14 @@ const App: Component = () => {
                               {item.ano}
                             </p>
 
-                            <p
-                              class="text-lg text-red-500 hover:cursor-pointer hover:underline"
+                            <button
+                              class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
                               onClick={async () =>
-                                await deleteCandidato(item.id)
+                                await deleteEquipeApoio(item.id)
                               }
                             >
                               deletar
-                            </p>
+                            </button>
                           </div>
                           {data()?.length - 1 > index && (
                             <div class="divider"></div>
@@ -631,14 +762,12 @@ const App: Component = () => {
                               {new Date(item.data_nascimento).getMonth()}/
                               {new Date(item.data_nascimento).getFullYear()}
                             </p>
-                            <p
-                              class="text-lg text-red-500 hover:cursor-pointer hover:underline"
-                              onClick={async () =>
-                                await deleteCandidato(item.id)
-                              }
+                            <button
+                              class="btn btn-error text-lg text-red-800 hover:cursor-pointer hover:underline"
+                              onClick={async () => await deletePessoa(item.id)}
                             >
                               deletar
-                            </p>
+                            </button>
                           </div>
                           {data()?.length - 1 > index && (
                             <div class="divider"></div>

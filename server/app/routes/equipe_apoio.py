@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from psycopg2.extras import RealDictCursor
 from app.db import get_db_connection
+from app.routes.participante_equipe import delete_participante_equipe
 
 equipe_apoio_bp = Blueprint('equipe_apoio_bp', __name__)
 
@@ -65,7 +66,14 @@ def update_equipe_apoio(id):
 def delete_equipe_apoio(id):
     conn = get_db_connection()
     cur = conn.cursor()
+
+    cur.execute('SELECT id FROM participante_equipe WHERE equipe_apoio_id = %s', (id,))
+    participantes = cur.fetchall()
+    for participante in participantes:
+        delete_participante_equipe(participante[0])
+
     cur.execute('DELETE FROM equipe_apoio WHERE id = %s', (id,))
+
     conn.commit()
     cur.close()
     return jsonify({"message": "Equipe de Apoio deleted successfully!"}), 200

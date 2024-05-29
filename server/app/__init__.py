@@ -2,6 +2,7 @@ import sys
 import os
 from flask import Flask
 
+
 # Adiciona o caminho da pasta raiz ao sys.path
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
@@ -16,7 +17,8 @@ from .routes.participante_equipe import participante_equipe_bp
 from .routes.doador import doador_bp
 from .routes.doacao import doacao_bp
 from .routes.pleito import pleito_bp
-from flask_cors import CORS, cross_origin
+from .routes.bd_functions import bd_functions_bp
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
@@ -35,5 +37,6 @@ def create_app():
     app.register_blueprint(doador_bp)
     app.register_blueprint(doacao_bp)
     app.register_blueprint(pleito_bp)
+    app.register_blueprint(bd_functions_bp)
 
     return app
